@@ -9,6 +9,3 @@ https://interprism.hatenablog.com/entry/bitboard
 
 リバーシの評価関数について
 https://www.info.kindai.ac.jp/~takasi-i/thesis/2012_09-1-037-0133_S_Shiota_thesis.pdf
-
-私のgithub
-https://github.com/tasotaku/OthelloAI
