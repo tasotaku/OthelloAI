@@ -517,104 +517,109 @@ public class MoveRef2 {
     }
 
     public static void main(String args[]) {
-        boolean flag = true;
+        
         Socket s;
-        InputStream sIn;
-        OutputStream sOut;
-        BufferedReader br;
-        PrintWriter pw;
-        String str1;
-        String senString = "";
-        String[] strs1;
-        String[] boardstr = new String[65];
 
-        try {
-            s = new Socket(args[0], 50001);
+        while (true) {
 
-            sIn = s.getInputStream();
-            sOut = s.getOutputStream();
-            br = new BufferedReader(new InputStreamReader(sIn));
-            pw = new PrintWriter(new OutputStreamWriter(sOut), true);
-            long maxTime = 0;
-            int x;
-            int y;
+            InputStream sIn;
+            OutputStream sOut;
+            BufferedReader br;
+            PrintWriter pw;
+            String str1;
+            String senString = "";
+            String[] strs1;
+            String[] boardstr = new String[65];
 
-            while (flag) {
-                str1 = br.readLine();
-                strs1 = str1.split(" ");
+            try {
+                s = new Socket(args[0], 50001);
+                boolean flag = true;
 
-                switch (strs1[0]) {
-                    case "START":
-                        System.out.println(str1);
-                        MoveRef2.my_color = strs1[1];
-                        if (MoveRef2.my_color.equals("1")) {
-                            MoveRef2.enemy_color = "-1";
-                        } else {
-                            MoveRef2.enemy_color = "1";
-                        }
-                        senString = "NICK 6321100";
-                        pw.println(senString);
-                        break;
+                sIn = s.getInputStream();
+                sOut = s.getOutputStream();
+                br = new BufferedReader(new InputStreamReader(sIn));
+                pw = new PrintWriter(new OutputStreamWriter(sOut), true);
+                long maxTime = 0;
+                int x;
+                int y;
 
-                    case "BOARD":
-                        // System.out.println(strs1[0]);
-                        boardstr = strs1;
-                        print_board(boardstr);
-                        break;
+                while (flag) {
+                    str1 = br.readLine();
+                    strs1 = str1.split(" ");
 
-                    case "TURN":
-                        // System.out.println(str1);
-                        // System.out.println(strs1[1]);
-                        // System.out.println(my_color);
-                        if (strs1[1].equals(MoveRef2.my_color)) {
-                            // System.out.println("a");
-                            long ownBoard = str_to_mybit(boardstr);
-                            long enemyBoard = str_to_enemybit(boardstr);
-                            // System.out.println("FSnum = " + evalFS(ownBoard, enemyBoard));
-                            // System.out.println("BPnum = " + evalBP(ownBoard, enemyBoard));
-                            // System.out.println("CNnum = " + evalCN(ownBoard, enemyBoard));
-                            // System.out.println("eval = " + evaluate(ownBoard, enemyBoard));
-                            long startTime = System.currentTimeMillis();
-                            alphabetaPerfect(ownBoard, enemyBoard, false, 9, -1000, 1000, ref);
-                            long endTime = System.currentTimeMillis();
-                            System.out.println("処理時間：" + (endTime - startTime) + " ms");
-                            if (maxTime < endTime - startTime) {
-                                maxTime = endTime - startTime;
+                    switch (strs1[0]) {
+                        case "START":
+                            System.out.println(str1);
+                            MoveRef2.my_color = strs1[1];
+                            if (MoveRef2.my_color.equals("1")) {
+                                MoveRef2.enemy_color = "-1";
+                            } else {
+                                MoveRef2.enemy_color = "1";
                             }
-                            strs1 = move_to_put(ref.move);
-                            senString = "PUT " + strs1[0] + " " + strs1[1];
-                            System.out.println(senString);
+                            senString = "NICK CPU";
                             pw.println(senString);
-                        }
-                        break;
+                            break;
 
-                    case "ERROR":
-                        System.out.println(str1);
-                        Random rand1 = new Random();
-                        Random rand2 = new Random();
-                        x = rand1.nextInt(8);
-                        y = rand2.nextInt(8);
-                        pw.println("PUT " + x + " " + y);
-                        break;
+                        case "BOARD":
+                            // System.out.println(strs1[0]);
+                            boardstr = strs1;
+                            print_board(boardstr);
+                            break;
 
-                    case "END":
-                        System.out.println(str1);
-                        flag = false;
-                        System.out.println("maxtime = " + maxTime);
-                        break;
+                        case "TURN":
+                            // System.out.println(str1);
+                            // System.out.println(strs1[1]);
+                            // System.out.println(my_color);
+                            if (strs1[1].equals(MoveRef2.my_color)) {
+                                // System.out.println("a");
+                                long ownBoard = str_to_mybit(boardstr);
+                                long enemyBoard = str_to_enemybit(boardstr);
+                                // System.out.println("FSnum = " + evalFS(ownBoard, enemyBoard));
+                                // System.out.println("BPnum = " + evalBP(ownBoard, enemyBoard));
+                                // System.out.println("CNnum = " + evalCN(ownBoard, enemyBoard));
+                                // System.out.println("eval = " + evaluate(ownBoard, enemyBoard));
+                                long startTime = System.currentTimeMillis();
+                                alphabetaPerfect(ownBoard, enemyBoard, false, 9, -1000, 1000, ref);
+                                long endTime = System.currentTimeMillis();
+                                System.out.println("処理時間：" + (endTime - startTime) + " ms");
+                                if (maxTime < endTime - startTime) {
+                                    maxTime = endTime - startTime;
+                                }
+                                strs1 = move_to_put(ref.move);
+                                senString = "PUT " + strs1[0] + " " + strs1[1];
+                                System.out.println(senString);
+                                pw.println(senString);
+                            }
+                            break;
 
-                    case "CLOSE":
-                        // System.out.println(str1);
-                        flag = false;
-                        break;
+                        case "ERROR":
+                            System.out.println(str1);
+                            Random rand1 = new Random();
+                            Random rand2 = new Random();
+                            x = rand1.nextInt(8);
+                            y = rand2.nextInt(8);
+                            pw.println("PUT " + x + " " + y);
+                            break;
+
+                        case "END":
+                            System.out.println(str1);
+                            flag = false;
+                            System.out.println("maxtime = " + maxTime);
+                            break;
+
+                        case "CLOSE":
+                            // System.out.println(str1);
+                            flag = false;
+                            break;
+
+                    }
 
                 }
 
+            } catch (IOException e) {
+                System.err.println("Caught IOException");
+                System.exit(1);
             }
-
-        } catch (IOException e) {
-            System.err.println("Caught IOException");
-            System.exit(1);
         }
     }
 }
